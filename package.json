@@ -3,7 +3,16 @@
   "version": "0.0.1",
   "author": "tanhaican@126.com",
   "main": "lib/editable-cell.umd.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tanhaican/editable-cell.git"
+  },
+  "keywords": [
+    "editable",
+    "cell"
+  ],
   "homepage": "https://github.com/tanhaican/editable-cell",
+  "description": "Editable cell for table of element-ui",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
