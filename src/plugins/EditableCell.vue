@@ -1,5 +1,9 @@
 <template>
-  <div @click="onFieldClick" @keydown.esc="onInputExit" class="edit-cell-container edit-cell">
+  <div
+    @click="onFieldClick"
+    @keydown.esc="onInputExit"
+    class="edit-cell-container edit-cell"
+  >
     <el-tooltip
       v-if="!editMode && !showInput"
       :placement="toolTipPlacement"
@@ -7,29 +11,58 @@
       :disabled="!editMode"
       :content="toolTipContent"
     >
-      <div :class="{ 'edit-enabled-cell': canEdit }" @keyup.enter="onFieldClick" tabindex="0" class="cell-content">
-        <slot name="content"></slot>
+      <div
+        :class="{ 'edit-enabled-cell': canEdit }"
+        @keyup.enter="onFieldClick"
+        tabindex="0"
+        class="cell-content"
+      >
+        <slot name="content">
+          <span>{{ labelName }}</span>
+        </slot>
       </div>
     </el-tooltip>
-    <component
-      ref="input"
-      :is="editableComponent"
-      v-if="editMode || showInput"
-      @focus="onFieldClick"
-      @keyup.enter.native="onInputExit"
-      v-on="listeners"
-      v-bind="$attrs"
-      v-model="model"
-      :placeholder="placeholder"
-      class="editable-component"
-    >
-      <slot name="edit-component-slot"></slot>
-    </component>
+    <template v-else>
+      <component
+        ref="input"
+        :is="editableComponent"
+        v-if="editableComponent === 'el-select'"
+        @focus="onFieldClick"
+        @keyup.enter.native="onInputExit"
+        v-on="listeners"
+        v-bind="$attrs"
+        v-model="model"
+        :placeholder="placeholder"
+        class="editable-component"
+      >
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </component>
+      <component
+        ref="input"
+        :is="editableComponent"
+        v-else
+        @focus="onFieldClick"
+        @keyup.enter.native="onInputExit"
+        v-on="listeners"
+        v-bind="$attrs"
+        v-model="model"
+        :placeholder="placeholder"
+        class="editable-component"
+      >
+        <slot name="edit-component-slot"></slot>
+      </component>
+    </template>
   </div>
 </template>
 <script>
 export default {
-  name: 'EditableCell',
+  name: "EditableCell",
   inheritAttrs: false,
   props: {
     value: {
@@ -42,7 +75,7 @@ export default {
     },
     toolTipContent: {
       type: String,
-      default: 'Click to edit'
+      default: "Click to edit"
     },
     toolTipDelay: {
       type: Number,
@@ -50,7 +83,7 @@ export default {
     },
     toolTipPlacement: {
       type: String,
-      default: 'top-start'
+      default: "top-start"
     },
     /**
      * 是否显示输入框
@@ -61,11 +94,15 @@ export default {
     },
     editableComponent: {
       type: String,
-      default: 'el-input'
+      default: "el-input"
+    },
+    options: {
+      type: Array,
+      default: () => []
     },
     closeEvent: {
       type: String,
-      default: 'blur'
+      default: "blur"
     },
     /**
      * 是否支持编辑（单击切换为输入框模式）
@@ -86,7 +123,16 @@ export default {
         return this.value;
       },
       set(val) {
-        this.$emit('input', val);
+        this.$emit("input", val);
+      }
+    },
+    labelName() {
+      if (!this.options || !this.options.length) return "";
+
+      const found = this.options.find(o => o.value === this.value);
+      if (!found) return "";
+      else {
+        return found.label;
       }
     },
     listeners() {
@@ -102,7 +148,11 @@ export default {
         this.editMode = true;
         this.$nextTick(() => {
           const inputRef = this.$refs.input;
-          if (inputRef && inputRef.focus && typeof inputRef.focus === "function") {
+          if (
+            inputRef &&
+            inputRef.focus &&
+            typeof inputRef.focus === "function"
+          ) {
             inputRef.focus();
           }
         });
@@ -112,7 +162,7 @@ export default {
       this.editMode = false;
     },
     onInputChange(val) {
-      this.$emit('input', val);
+      this.$emit("input", val);
     }
   }
 };
