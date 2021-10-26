@@ -1,7 +1,7 @@
 <template>
   <div
     @click="onFieldClick"
-    @keydown.esc="onInputExit"
+    @keyup.esc="onInputExit('Manual')"
     class="edit-cell-container edit-cell"
   >
     <el-tooltip
@@ -28,7 +28,8 @@
         :is="editableComponent"
         v-if="editableComponent === 'el-select'"
         @focus="onFieldClick"
-        @keyup.enter.native="onInputExit"
+        @handleOptionClick="onOptionClick"
+        @keyup.enter.native="onInputExit('Manual')"
         v-on="listeners"
         v-bind="$attrs"
         v-model="model"
@@ -48,7 +49,7 @@
         :is="editableComponent"
         v-else
         @focus="onFieldClick"
-        @keyup.enter.native="onInputExit"
+        @keyup.enter.native="onInputExit('Manual')"
         v-on="listeners"
         v-bind="$attrs"
         v-model="model"
@@ -158,8 +159,14 @@ export default {
         });
       }
     },
-    onInputExit() {
+    onOptionClick() {
       this.editMode = false;
+    },
+    onInputExit(type) {
+      if (type !== "Manual") return;
+      this.$nextTick(() => {
+        this.editMode = false;
+      });
     },
     onInputChange(val) {
       this.$emit("input", val);
