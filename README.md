@@ -1,6 +1,13 @@
 # editable-cell
 
+### Preview
+
+![Preview](preview.png)
+
+
+
 ## Install
+
 ```
 npm install editable-cell --save
 ```

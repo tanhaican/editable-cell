@@ -1,5 +1,5 @@
 {
-  "name": "el-editable-cell",
+  "name": "editable-cell",
   "version": "0.1.1",
   "author": "tanhaican@126.com",
   "main": "lib/editable-cell.umd.min.js",
